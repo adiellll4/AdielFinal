@@ -1,0 +1,66 @@
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'first_name', defaultValue: '0', description: 'Enter name')
+        string(name: 'birth_day', defaultValue: '0', description: 'Enter birth_day')
+        string(name: 'birth_month', defaultValue: '0', description: 'Enter birth_month')
+        
+    }
+
+    environment {
+        OUTPUT_FILE = 'output.html'
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/adiellll4/AdielFinal.git'  // Replace with your repository URL
+            }
+        }
+
+        stage('Run Shell Script') {
+            steps {
+                script {
+                    def output = sh(script: "bash FinalProject.sh ${params.user_input}", returnStdout: true).trim()
+                    writeFile file: OUTPUT_FILE, text: "<html><body><h1>Output</h1><p>${output}</p></body></html>"
+                }
+            }
+        }
+
+        stage('Display Parameter') {
+            steps {
+                script {
+                    currentBuild.description = "Numeric parameter is ${params.user_input}"
+                }
+            }
+        }
+
+        stage('Verify Parameter on Web Page') {
+            steps {
+                script {
+                    def description = currentBuild.description
+                    if (description.contains("${params.user_input}")) {
+                        echo "Parameter ${params.user_input} exists on the web page."
+                    } else {
+                        error "Parameter ${params.user_input} does not exist on the web page."
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: OUTPUT_FILE, fingerprint: true
+            publishHTML(target: [
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: '.',
+                reportFiles: OUTPUT_FILE,
+                reportName: 'Shell Script Output'
+            ])
+        }
+    }
+}

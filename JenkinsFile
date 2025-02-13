@@ -8,6 +8,7 @@ pipeline {
         
     }
 
+
     environment {
         OUTPUT_FILE = 'output.html'
     }

@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     parameters {
-        string(name: 'first_name', defaultValue: '0', description: 'Enter name')
-        string(name: 'birth_day', defaultValue: '0', description: 'Enter birth_day')
-        string(name: 'birth_month', defaultValue: '0', description: 'Enter birth_month')
+        string(name: 'NAME', defaultValue: 'Adiel', description: 'Enter name')
+        string(name: 'BIRTHDAY', defaultValue: '0', description: 'Enter birthday')
+        string(name: 'BIRTHMONTH', defaultValue: '0', description: 'Enter birth_month')
         
     }
 
